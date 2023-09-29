@@ -7,6 +7,7 @@ import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import LoginScreen from '../screens/LoginScreen/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import MainScreen from '../screens/MainScreen';
+import ChatScreen from '../screens/ChatScreen';
 
 const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
@@ -37,6 +38,11 @@ const AppNavigator = () => {
           name={NavigationString.MAIN}
           component={MainScreen}
           options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={NavigationString.CHAT}
+          component={ChatScreen}
+          options={{headerShown: true}}
         />
       </Stack.Navigator>
     </NavigationContainer>

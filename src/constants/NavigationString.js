@@ -4,4 +4,5 @@ export default {
   LOGIN: 'LoginScreen',
   SIGNUP: 'SignupScreen',
   MAIN: 'MainScreen',
+  CHAT: 'ChatScreen',
 };

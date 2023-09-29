@@ -27,25 +27,23 @@ const SignUpScreen = () => {
 
   const navigation = useNavigation();
 
-  const registerUser = () => {
+  const registerUser = async () => {
     const userId = uuid.v4();
-    firestore()
-      .collection('users')
-      .doc(userId)
-      .set({
+    try {
+      await firestore().collection('users').doc(userId).set({
         name: name,
         email: email,
         password: password,
         mobile: mobile,
         userId: userId,
-      })
-      .then(res => {
-        console.log('user created successfully', res);
-        navigation.navigate(NavigationString.LOGIN);
-      })
-      .catch(error => {
-        console.log(error);
       });
+
+      console.log('User created successfully');
+      navigation.navigate(NavigationString.LOGIN);
+    } catch (error) {
+      console.log(error);
+      Alert.alert('An error occurred');
+    }
   };
 
   const validate = () => {
@@ -79,7 +77,7 @@ const SignUpScreen = () => {
       setPasswordError('Please enter a password');
     }
 
-    if (password.length < 3) {
+    if (password.length < 4) {
       isValid = false;
       setPasswordError('Password must be at least 4 characters long');
     }
@@ -166,6 +164,7 @@ const SignUpScreen = () => {
         }}>
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
+
       <TouchableOpacity
         onPress={() => navigation.navigate(NavigationString.LOGIN)}>
         <Text style={styles.orLogin}>Or Login</Text>
