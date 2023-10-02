@@ -1,14 +1,15 @@
-import {View, Text} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
 import {GiftedChat} from 'react-native-gifted-chat';
+import styles from './styles';
 import {useRoute} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
-import uuid from 'react-native-uuid';
 
 const ChatScreen = () => {
-  const [messageList, setMessageList] = useState([]);
+  const [messagesList, setMessagesList] = useState([]);
+
   const route = useRoute();
+
   useEffect(() => {
     const subscriber = firestore()
       .collection('chats')
@@ -16,15 +17,17 @@ const ChatScreen = () => {
       .collection('messages')
       .orderBy('createdAt', 'desc');
     subscriber.onSnapshot(querysnapshot => {
-      const allmessages = querysnapshot.docs.map(item => {
-        return {...item._data, createdAt: item._data.createdAt};
+      const allMessages = querysnapshot.docs.map(item => {
+        return {...item._data, createdAt: Date.parse(new Date())};
       });
-      setMessageList(allmessages);
+      setMessagesList(allMessages);
     });
-    return () => subscriber();
+    return () => {
+      subscriber();
+    };
   }, []);
 
-  const onSend = useCallback(async (messages = []) => {
+  const onSend = useCallback((messages = []) => {
     const msg = messages[0];
     const myMsg = {
       ...msg,
@@ -32,7 +35,8 @@ const ChatScreen = () => {
       sendTo: route.params.data.userId,
       createdAt: Date.parse(msg.createdAt),
     };
-    setMessageList(previousMessages =>
+
+    setMessagesList(previousMessages =>
       GiftedChat.append(previousMessages, myMsg),
     );
     firestore()
@@ -40,6 +44,7 @@ const ChatScreen = () => {
       .doc('' + route.params.id + route.params.data.userId)
       .collection('messages')
       .add(myMsg);
+
     firestore()
       .collection('chats')
       .doc('' + route.params.data.userId + route.params.id)
@@ -48,13 +53,15 @@ const ChatScreen = () => {
   }, []);
 
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.container}>
+      <Text>ChatScreen</Text>
       <GiftedChat
-        messages={messageList}
+        messages={messagesList}
         onSend={messages => onSend(messages)}
         user={{
           _id: route.params.id,
         }}
+        keyExtractor={message => message.id.toString()}
       />
     </View>
   );

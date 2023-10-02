@@ -6,46 +6,38 @@ import {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: 'white',
+    flex: 1,
   },
   header: {
-    width: wp(100),
+    width: '100%',
     height: hp(6),
-    elevation: 50,
-    shadowColor: '#eee',
+    backgroundColor: 'white',
+    elevation: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: hp(2),
-    backgroundColor: 'white',
   },
   title: {
     color: '#258',
-    fontSize: hp(2),
-    fontWeight: '800',
+    fontSize: 20,
+    fontWeight: '600',
   },
-  userItems: {
-    width: Dimensions.get('window').width - 50,
+  userItem: {
+    width: Dimensions.get('window').width - 35,
     alignSelf: 'center',
-    marginTop: hp(5),
+    marginTop: hp(4),
     flexDirection: 'row',
-    height: hp(6),
-    borderWidth: 0.6,
+    height: hp(7),
+    borderWidth: 0.5,
     borderRadius: 10,
+    paddingLeft: wp(4),
+    alignItems: 'center',
   },
-  userImage: {
-    height: hp(3.7),
+  userIcon: {
     width: wp(8),
-    alignSelf: 'center',
-    marginLeft: hp(1.5),
+    height: hp(4),
   },
-  itemText: {
-    fontSize: hp(3.4),
-    marginLeft: hp(1.5),
-    alignSelf: 'center',
-    textAlign: 'center',
-    color: '#000000',
-  },
+  name: {color: 'black', marginLeft: 20, fontSize: 20},
 });
 
 export default styles;
