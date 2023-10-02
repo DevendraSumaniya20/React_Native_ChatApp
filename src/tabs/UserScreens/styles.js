@@ -9,16 +9,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flex: 1,
   },
+  ImageBackground: {
+    height: hp(100),
+    width: wp(100),
+  },
   header: {
     width: '100%',
-    height: hp(6),
-    backgroundColor: 'white',
+    height: hp(5),
+    color: '#ffffff',
     elevation: 5,
     justifyContent: 'center',
     alignItems: 'center',
   },
   title: {
-    color: '#258',
+    color: '#fff',
     fontSize: 20,
     fontWeight: '600',
   },
@@ -28,16 +32,19 @@ const styles = StyleSheet.create({
     marginTop: hp(4),
     flexDirection: 'row',
     height: hp(7),
-    borderWidth: 0.5,
-    borderRadius: 10,
+    borderWidth: 1,
+    borderRadius: 16,
     paddingLeft: wp(4),
     alignItems: 'center',
+    color: '#fff',
+    borderColor: '#fff',
   },
   userIcon: {
     width: wp(8),
     height: hp(4),
+    tintColor: '#fff',
   },
-  name: {color: 'black', marginLeft: 20, fontSize: 20},
+  name: {color: '#fff', marginLeft: 20, fontSize: 20},
 });
 
 export default styles;

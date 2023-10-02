@@ -7,6 +7,12 @@ import {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'red',
+  },
+  ImageBackground: {
+    width: wp(100),
+    height: hp(100),
+    flex: 1,
   },
 });
 

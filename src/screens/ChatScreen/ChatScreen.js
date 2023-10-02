@@ -1,13 +1,19 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {ImageBackground, SafeAreaView} from 'react-native';
 import React, {useState, useEffect, useCallback} from 'react';
-import {GiftedChat} from 'react-native-gifted-chat';
-import styles from './styles';
-import {useRoute} from '@react-navigation/native';
+import {Bubble, GiftedChat, Avatar} from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
+import ImagePath from '../../constants/ImagePath';
+import styles from './styles';
+
+import CustomInputToolbar from '../../components/CustomInputToolbar';
+import CustomActions from '../../components/CustomActions';
+import CustomComposer from '../../components/CustomComposer';
+import TypingIndicator from '../../components/TypingIndicator';
+import MessageTimestamp from '../../components/MessageTimestamp';
+import {useRoute} from '@react-navigation/native';
 
 const ChatScreen = () => {
   const [messagesList, setMessagesList] = useState([]);
-
   const route = useRoute();
 
   useEffect(() => {
@@ -52,18 +58,44 @@ const ChatScreen = () => {
       .add(myMsg);
   }, []);
 
+  const renderBubble = props => (
+    <Bubble
+      {...props}
+      textStyle={{
+        right: {color: 'white'},
+        left: {color: 'black'},
+      }}
+      wrapperStyle={{
+        right: {
+          backgroundColor: '#3897f0',
+          borderRadius: 15,
+        },
+        left: {
+          backgroundColor: '#f0f0f0',
+          borderRadius: 15,
+        },
+      }}
+    />
+  );
+
   return (
-    <View style={styles.container}>
-      <Text>ChatScreen</Text>
-      <GiftedChat
-        messages={messagesList}
-        onSend={messages => onSend(messages)}
-        user={{
-          _id: route.params.id,
-        }}
-        keyExtractor={message => message.id.toString()}
-      />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <ImageBackground
+        source={ImagePath.BACKGROUNDIMAGE}
+        style={styles.ImageBackground}>
+        <GiftedChat
+          messages={messagesList}
+          onSend={messages => onSend(messages)}
+          user={{
+            _id: route.params.id,
+          }}
+          keyExtractor={message => message.id.toString()}
+          renderBubble={renderBubble}
+          loadEarlier={true}
+          onLoadEarlier={() => loadEarlierMessages()}
+        />
+      </ImageBackground>
+    </SafeAreaView>
   );
 };
 

@@ -6,12 +6,17 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import uuid from 'react-native-uuid';
 import NavigationString from '../../constants/NavigationString';
+import ImagePath from '../../constants/ImagePath';
+import {heightPercentageToDP} from 'react-native-responsive-screen';
 
 const SignUpScreen = () => {
   const [name, setName] = useState('');
@@ -90,85 +95,103 @@ const SignUpScreen = () => {
     return isValid;
   };
 
+  const keyboardVerticalOffset =
+    Platform.OS === 'ios' || Platform.OS === 'android'
+      ? heightPercentageToDP(30)
+      : 0;
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
+      <KeyboardAvoidingView
+        behavior="padding"
+        keyboardVerticalOffset={keyboardVerticalOffset}>
+        <ImageBackground
+          source={ImagePath.BACKGROUNDIMAGE}
+          style={styles.ImageBackground}>
+          <Text style={styles.title}>Sign Up</Text>
 
-      <TextInput
-        autoCapitalize="none"
-        autoComplete="off"
-        autoCorrect={false}
-        style={styles.input}
-        placeholder="Enter Name"
-        value={name}
-        onChangeText={txt => setName(txt)}
-      />
-      <Text style={styles.errorText}>{nameError}</Text>
+          <TextInput
+            autoCapitalize="none"
+            autoComplete="off"
+            autoCorrect={false}
+            style={styles.input}
+            placeholder="Enter Name"
+            value={name}
+            placeholderTextColor={'#fff'}
+            onChangeText={txt => setName(txt)}
+          />
+          <Text style={styles.errorText}>{nameError}</Text>
 
-      <TextInput
-        autoCapitalize="none"
-        autoComplete="off"
-        autoCorrect={false}
-        style={styles.input}
-        placeholder="Enter Email"
-        value={email}
-        onChangeText={txt => setEmail(txt)}
-        keyboardType="email-address"
-      />
-      <Text style={styles.errorText}>{emailError}</Text>
+          <TextInput
+            autoCapitalize="none"
+            autoComplete="off"
+            autoCorrect={false}
+            style={styles.input}
+            placeholder="Enter Email"
+            placeholderTextColor={'#fff'}
+            value={email}
+            onChangeText={txt => setEmail(txt)}
+            keyboardType="email-address"
+          />
+          <Text style={styles.errorText}>{emailError}</Text>
 
-      <TextInput
-        autoCapitalize="none"
-        autoComplete="off"
-        autoCorrect={false}
-        style={styles.input}
-        keyboardType="number-pad"
-        placeholder="Enter Mobile"
-        value={mobile}
-        onChangeText={txt => setMobile(txt)}
-      />
-      <Text style={styles.errorText}>{mobileError}</Text>
+          <TextInput
+            autoCapitalize="none"
+            autoComplete="off"
+            autoCorrect={false}
+            style={styles.input}
+            placeholderTextColor={'#fff'}
+            keyboardType="number-pad"
+            placeholder="Enter Mobile"
+            value={mobile}
+            onChangeText={txt => setMobile(txt)}
+          />
+          <Text style={styles.errorText}>{mobileError}</Text>
 
-      <TextInput
-        autoCapitalize="none"
-        autoComplete="off"
-        autoCorrect={false}
-        style={styles.input}
-        placeholder="Enter Password"
-        value={password}
-        secureTextEntry
-        onChangeText={txt => setPassword(txt)}
-      />
-      <Text style={styles.errorText}>{passwordError}</Text>
+          <TextInput
+            autoCapitalize="none"
+            autoComplete="off"
+            autoCorrect={false}
+            style={styles.input}
+            placeholderTextColor={'#fff'}
+            placeholder="Enter Password"
+            value={password}
+            secureTextEntry
+            onChangeText={txt => setPassword(txt)}
+          />
+          <Text style={styles.errorText}>{passwordError}</Text>
 
-      <TextInput
-        autoCapitalize="none"
-        autoComplete="off"
-        autoCorrect={false}
-        style={styles.input}
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        secureTextEntry
-        onChangeText={txt => setConfirmPassword(txt)}
-      />
-      <Text style={styles.errorText}>{confirmPasswordError}</Text>
+          <TextInput
+            autoCapitalize="none"
+            autoComplete="off"
+            autoCorrect={false}
+            style={styles.input}
+            placeholderTextColor={'#fff'}
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            secureTextEntry
+            onChangeText={txt => setConfirmPassword(txt)}
+          />
+          <Text style={styles.errorText}>{confirmPasswordError}</Text>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          if (validate()) {
-            registerUser();
-          } else {
-            Alert.alert('Please Enter your details.');
-          }
-        }}>
-        <Text style={styles.buttonText}>Sign Up</Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              if (validate()) {
+                registerUser();
+              } else {
+                Alert.alert('Please Enter your details.');
+              }
+            }}>
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={() => navigation.navigate(NavigationString.LOGIN)}>
-        <Text style={styles.orLogin}>Or Login</Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate(NavigationString.LOGIN)}>
+            <Text style={styles.orLogin}>Or Login</Text>
+          </TouchableOpacity>
+        </ImageBackground>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

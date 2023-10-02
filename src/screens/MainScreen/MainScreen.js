@@ -21,7 +21,7 @@ const MainScreen = () => {
             source={ImagePath.GROUP}
             style={[
               styles.tabIcon,
-              {tintColor: selectedTab == 0 ? 'white' : '#A09F9F'},
+              {tintColor: selectedTab == 0 ? '#fff' : '#808080'},
             ]}
           />
         </TouchableOpacity>
@@ -34,7 +34,7 @@ const MainScreen = () => {
             source={ImagePath.SETTING}
             style={[
               styles.tabIcon,
-              {tintColor: selectedTab == 1 ? 'white' : '#A09F9F'},
+              {tintColor: selectedTab == 1 ? '#fff' : '#808080'},
             ]}
           />
         </TouchableOpacity>

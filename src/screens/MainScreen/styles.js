@@ -14,10 +14,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     height: hp(8),
-    backgroundColor: '#258',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
+    marginBottom: hp(0.5),
   },
   tab: {
     width: wp(50),

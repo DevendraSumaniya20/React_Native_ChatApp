@@ -1,4 +1,12 @@
-import {View, Text, FlatList, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  SafeAreaView,
+  ImageBackground,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -39,29 +47,33 @@ const UserScreen = () => {
       });
   };
   return (
-    <View style={[styles.container]}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Chat App</Text>
-      </View>
-      <FlatList
-        data={users}
-        renderItem={({item, index}) => {
-          return (
-            <TouchableOpacity
-              style={[styles.userItem, {backgroundColor: 'white'}]}
-              onPress={() => {
-                navigation.navigate(NavigationString.CHAT, {
-                  data: item,
-                  id: id,
-                });
-              }}>
-              <Image source={ImagePath.PROFILE} style={styles.userIcon} />
-              <Text style={styles.name}>{item.name}</Text>
-            </TouchableOpacity>
-          );
-        }}
-      />
-    </View>
+    <SafeAreaView style={[styles.container]}>
+      <ImageBackground
+        source={ImagePath.BACKGROUNDIMAGE}
+        style={styles.ImageBackground}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Friends</Text>
+        </View>
+        <FlatList
+          data={users}
+          renderItem={({item, index}) => {
+            return (
+              <TouchableOpacity
+                style={[styles.userItem, {backgroundColor: 'transparent'}]}
+                onPress={() => {
+                  navigation.navigate(NavigationString.CHAT, {
+                    data: item,
+                    id: id,
+                  });
+                }}>
+                <Image source={ImagePath.PROFILE} style={styles.userIcon} />
+                <Text style={styles.name}>{item.name}</Text>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      </ImageBackground>
+    </SafeAreaView>
   );
 };
 

@@ -7,6 +7,9 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  ImageBackground,
+  StatusBar,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
@@ -14,6 +17,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import NavigationString from '../../constants/NavigationString';
 import Loader from '../../components/Loader';
 import styles from './styles';
+import ImagePath from '../../constants/ImagePath';
+import {heightPercentageToDP} from 'react-native-responsive-screen';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -55,43 +60,62 @@ const LoginScreen = () => {
     }
   };
 
+  const keyboardVerticalOffset =
+    Platform.OS === 'ios' || Platform.OS === 'android'
+      ? heightPercentageToDP(30)
+      : 0;
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-
-      <TextInput
-        autoCapitalize="none"
-        autoCompleteType="off"
-        autoCorrect={false}
-        style={styles.input}
-        placeholder="Enter Email"
-        value={email}
-        placeholderTextColor="#000"
-        onChangeText={txt => setEmail(txt)}
+      <StatusBar
+        backgroundColor={'transparent'}
+        networkActivityIndicatorVisible
+        showHideTransition={'slide'}
+        barStyle={'dark-content'}
       />
+      <KeyboardAvoidingView
+        behavior="padding"
+        keyboardVerticalOffset={keyboardVerticalOffset}>
+        <ImageBackground
+          source={ImagePath.BACKGROUNDIMAGE}
+          style={styles.ImageBackground}>
+          <Text style={styles.title}>Login</Text>
 
-      <TextInput
-        autoCapitalize="none"
-        autoCompleteType="off"
-        autoCorrect={false}
-        style={styles.input}
-        placeholder="Enter Password"
-        value={password}
-        placeholderTextColor="#000"
-        secureTextEntry
-        onChangeText={txt => setPassword(txt)}
-      />
+          <TextInput
+            autoCapitalize="none"
+            autoCompleteType="off"
+            autoCorrect={false}
+            style={styles.input}
+            placeholder="Enter Email"
+            value={email}
+            placeholderTextColor="#fff"
+            onChangeText={txt => setEmail(txt)}
+          />
 
-      <TouchableOpacity style={styles.button} onPress={() => loginUser()}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+          <TextInput
+            autoCapitalize="none"
+            autoCompleteType="off"
+            autoCorrect={false}
+            style={styles.input}
+            placeholder="Enter Password"
+            value={password}
+            placeholderTextColor="#fff"
+            secureTextEntry
+            onChangeText={txt => setPassword(txt)}
+          />
 
-      <TouchableOpacity
-        onPress={() => navigation.navigate(NavigationString.SIGNUP)}>
-        <Text style={styles.orLogin}>Or SignUp</Text>
-      </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => loginUser()}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
 
-      <Loader visible={visible} />
+          <TouchableOpacity
+            onPress={() => navigation.navigate(NavigationString.SIGNUP)}>
+            <Text style={styles.orLogin}>Or SignUp</Text>
+          </TouchableOpacity>
+
+          <Loader visible={visible} />
+        </ImageBackground>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

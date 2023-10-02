@@ -8,10 +8,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+
+  ImageBackground: {
+    width: wp(100),
+    height: hp(100),
+  },
   title: {
     fontSize: hp('3'),
     alignSelf: 'center',
     margin: hp('2'),
+    color: '#fff',
+    fontWeight: '600',
   },
   input: {
     width: wp('90'),
@@ -21,6 +28,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     textAlign: 'left',
     marginTop: hp('2'),
+    borderColor: '#FFFFFF',
+    color: '#FFFFFF',
   },
   errorText: {
     color: 'red',
@@ -35,13 +44,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     marginTop: hp('5'),
-    backgroundColor: '#688888',
+    backgroundColor: '#147560',
   },
   buttonText: {
     textAlign: 'center',
     fontSize: hp('2.2'),
     color: '#fff',
-    fontWeight: '900',
+    fontWeight: '700',
   },
   orLogin: {
     alignSelf: 'center',
@@ -49,7 +58,7 @@ const styles = StyleSheet.create({
     fontSize: hp('2'),
     textDecorationLine: 'underline',
     fontWeight: '600',
-    color: 'black',
+    color: '#fff',
   },
 });
 
