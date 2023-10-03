@@ -1,11 +1,4 @@
-import {
-  ImageBackground,
-  SafeAreaView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {ImageBackground, SafeAreaView, Text} from 'react-native';
 import React, {useState, useEffect, useCallback} from 'react';
 import {Bubble, GiftedChat, Avatar} from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
