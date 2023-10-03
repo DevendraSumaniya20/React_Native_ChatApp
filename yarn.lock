@@ -5695,6 +5695,11 @@ mkdirp@^0.5.1:
   dependencies:
     minimist "^1.2.6"
 
+moment@^2.29.4:
+  version "2.29.4"
+  resolved "https://registry.npmjs.org/moment/-/moment-2.29.4.tgz"
+  integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
+
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/ms/-/ms-2.0.0.tgz"
@@ -6316,7 +6321,7 @@ react-native-size-matters@^0.4.1:
   resolved "https://registry.npmjs.org/react-native-size-matters/-/react-native-size-matters-0.4.1.tgz"
   integrity sha512-XQOsLwxx4az1bbf3DP4a+ZdOnhT1dV0pqCGi6YJCHwvdrUPKkQMWo4dl7F93UvRR4pPUC9oEMjMdVJgPwnd1tg==
 
-react-native-typing-animation@0.1.7:
+react-native-typing-animation@^0.1.7, react-native-typing-animation@0.1.7:
   version "0.1.7"
   resolved "https://registry.npmjs.org/react-native-typing-animation/-/react-native-typing-animation-0.1.7.tgz"
   integrity sha512-4H3rF9M+I2yAZpYJcY0Mb29TXkn98QK12rrKSY6LZj1BQD9NNmRZuNXzwX4XHapsIz+N/J8M3p27FOQPbfzqeg==
