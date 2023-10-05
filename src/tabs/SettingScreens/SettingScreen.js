@@ -4,10 +4,13 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {toggleTheme} from '../../store/reducerSlice/themeSlice';
 import {styles} from './styles';
+import {useNavigation} from '@react-navigation/native';
+import NavigationString from '../../constants/NavigationString';
 
 const SettingScreen = ({onLogOut}) => {
   const dispatch = useDispatch();
   const isDarkMode = useSelector(state => state.theme.isDarkmode);
+  const navigation = useNavigation();
 
   const handleToggle = () => {
     dispatch(toggleTheme());
@@ -15,7 +18,7 @@ const SettingScreen = ({onLogOut}) => {
 
   const handleLogout = async () => {
     try {
-      onLogOut();
+      navigation.navigate(NavigationString.LOGIN);
     } catch (error) {
       console.error('Error while logging out:', error);
     }
