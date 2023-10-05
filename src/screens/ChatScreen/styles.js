@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -7,12 +7,11 @@ import {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'red',
+    justifyContent: 'center',
   },
-  ImageBackground: {
-    width: wp(100),
-    height: hp(100),
-    flex: 1,
+
+  bottomSpaceView: {
+    marginBottom: hp(1.5),
   },
 });
 

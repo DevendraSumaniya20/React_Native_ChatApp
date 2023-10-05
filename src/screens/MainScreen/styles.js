@@ -7,7 +7,6 @@ import {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
   },
   bottomTab: {
     position: 'absolute',

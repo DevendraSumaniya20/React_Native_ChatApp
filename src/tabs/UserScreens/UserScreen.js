@@ -5,30 +5,30 @@ import {
   Image,
   TouchableOpacity,
   SafeAreaView,
-  ImageBackground,
+  StatusBar,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import ImagePath from '../../constants/ImagePath';
 import styles from './styles';
 import NavigationString from '../../constants/NavigationString';
+import {useSelector} from 'react-redux';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {heightPercentageToDP} from 'react-native-responsive-screen';
 let id = '';
+
 const UserScreen = () => {
   const [users, setUsers] = useState([]);
   const navigation = useNavigation();
-  const [mode, setMode] = useState('LIGHT');
-  const isFocued = useIsFocused();
+
+  const isDarkMode = useSelector(state => state.theme.isDarkmode);
+
   useEffect(() => {
     getUsers();
   }, []);
-  useEffect(() => {
-    getMode();
-  }, [isFocued]);
-  const getMode = async () => {
-    setMode(await AsyncStorage.getItem('MODE'));
-  };
+
   const getUsers = async () => {
     id = await AsyncStorage.getItem('USERID');
     let tempData = [];
@@ -38,41 +38,76 @@ const UserScreen = () => {
       .where('email', '!=', email)
       .get()
       .then(res => {
-        if (res.docs != []) {
-          res.docs.map(item => {
+        if (res.docs.length > 0) {
+          res.docs.forEach(item => {
             tempData.push(item.data());
           });
         }
         setUsers(tempData);
       });
   };
+
   return (
-    <SafeAreaView style={[styles.container]}>
-      <ImageBackground
-        source={ImagePath.BACKGROUNDIMAGE}
-        style={styles.ImageBackground}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Friends</Text>
-        </View>
-        <FlatList
-          data={users}
-          renderItem={({item, index}) => {
-            return (
-              <TouchableOpacity
-                style={[styles.userItem, {backgroundColor: 'transparent'}]}
-                onPress={() => {
-                  navigation.navigate(NavigationString.CHAT, {
-                    data: item,
-                    id: id,
-                  });
-                }}>
-                <Image source={ImagePath.PROFILE} style={styles.userIcon} />
-                <Text style={styles.name}>{item.name}</Text>
-              </TouchableOpacity>
-            );
-          }}
-        />
-      </ImageBackground>
+    <SafeAreaView
+      style={[
+        styles.container,
+        {backgroundColor: isDarkMode ? '#000' : '#fff'},
+      ]}>
+      <StatusBar
+        networkActivityIndicatorVisible
+        showHideTransition={'slide'}
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+      />
+      <View style={styles.backButton}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate(NavigationString.LOGIN);
+          }}>
+          <MaterialIcons
+            name="keyboard-arrow-left"
+            size={heightPercentageToDP(4)}
+            color={isDarkMode ? '#fff' : '#000'}
+          />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.header}>
+        <Text style={[styles.title, {color: isDarkMode ? '#fff' : '#000'}]}>
+          Friends
+        </Text>
+      </View>
+      <FlatList
+        data={users}
+        renderItem={({item, index}) => {
+          return (
+            <TouchableOpacity
+              style={[
+                styles.userItem,
+                {
+                  backgroundColor: isDarkMode ? '#333' : '#fff',
+                  borderBottomColor: isDarkMode ? '#444' : '#ccc',
+                },
+              ]}
+              onPress={() => {
+                navigation.navigate(NavigationString.CHAT, {
+                  data: item,
+                  id: id,
+                });
+              }}>
+              <Image
+                source={ImagePath.PROFILE}
+                style={[
+                  styles.userIcon,
+                  {tintColor: isDarkMode ? '#eee' : '#AAA'},
+                ]}
+              />
+              <Text
+                style={[styles.name, {color: isDarkMode ? '#fff' : '#000'}]}>
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          );
+        }}
+      />
     </SafeAreaView>
   );
 };

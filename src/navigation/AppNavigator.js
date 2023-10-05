@@ -19,11 +19,7 @@ const AppNavigator = () => {
           component={SplashScreen}
           options={{headerShown: false}}
         />
-        <Stack.Screen
-          name={NavigationString.HOME}
-          component={HomeScreen}
-          options={{headerShown: false}}
-        />
+
         <Stack.Screen
           name={NavigationString.LOGIN}
           component={LoginScreen}

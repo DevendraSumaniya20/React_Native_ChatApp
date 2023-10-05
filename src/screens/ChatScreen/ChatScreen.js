@@ -1,138 +1,123 @@
-import {ImageBackground, SafeAreaView, Text} from 'react-native';
-import React, {useState, useEffect, useCallback} from 'react';
-import {Bubble, GiftedChat, Avatar} from 'react-native-gifted-chat';
-import firestore from '@react-native-firebase/firestore';
+import React, {useCallback, useEffect, useState} from 'react';
+import {SafeAreaView, View} from 'react-native';
+import {GiftedChat, Bubble, InputToolbar} from 'react-native-gifted-chat';
 import {useRoute} from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
+import uuid from 'react-native-uuid';
+import {useSelector} from 'react-redux';
 import styles from './styles';
-import ImagePath from '../../constants/ImagePath';
 
 const ChatScreen = () => {
-  const [messagesList, setMessagesList] = useState([]);
-  const [inputText, setInputText] = useState('');
+  const [messageList, setMessageList] = useState([]);
   const route = useRoute();
+  const isDarkMode = useSelector(state => state.theme.isDarkmode);
 
   useEffect(() => {
-    const chatId1 = `${route.params.id}${route.params.data.userId}`;
-    const chatId2 = `${route.params.data.userId}${route.params.id}`;
-
-    const unsubscribe = firestore()
-      .collection('chats')
-      .doc(chatId1)
-      .collection('messages')
-      .orderBy('createdAt', 'desc')
-      .onSnapshot(querySnapshot => {
-        const allMessages = querySnapshot.docs.map(doc => ({
-          ...doc.data(),
-          _id: doc.id,
-        }));
-        setMessagesList(allMessages);
-      });
-
-    return () => {
-      unsubscribe();
+    const fetchData = async () => {
+      try {
+        const subscriber = await firestore()
+          .collection('chats')
+          .doc(route.params.id + route.params.data.userId)
+          .collection('messages')
+          .orderBy('createdAt', 'desc')
+          .onSnapshot(querySnapshot => {
+            const allMessages = querySnapshot.docs.map(item => ({
+              ...item._data,
+              createdAt: item._data.createdAt,
+            }));
+            setMessageList(allMessages);
+          });
+        return () => subscriber();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     };
-  }, [route.params.id, route.params.data.userId]);
 
-  const onSend = useCallback(
-    (messages = []) => {
+    fetchData();
+  }, []);
+
+  const onSend = useCallback(async (messages = []) => {
+    try {
       const msg = messages[0];
       const myMsg = {
         ...msg,
-        user: {
-          _id: route.params.id,
-        },
-        createdAt: new Date().getTime(),
+        sendBy: route.params.id,
+        sendTo: route.params.data.userId,
+        createdAt: Date.parse(msg.createdAt),
       };
-
-      setMessagesList(previousMessages =>
-        GiftedChat.append(previousMessages, [myMsg]),
+      setMessageList(previousMessages =>
+        GiftedChat.append(previousMessages, myMsg),
       );
 
-      const chatId1 = `${route.params.id}${route.params.data.userId}`;
-      const chatId2 = `${route.params.data.userId}${route.params.id}`;
+      const chatId1 = '' + route.params.id + route.params.data.userId;
+      const chatId2 = '' + route.params.data.userId + route.params.id;
 
-      const messageRef = firestore().collection('chats');
-      messageRef.doc(chatId1).collection('messages').add(myMsg);
-      messageRef.doc(chatId2).collection('messages').add(myMsg);
-    },
-    [route.params.data.userId, route.params.id],
-  );
+      const batch = firestore().batch();
+
+      batch.set(
+        firestore()
+          .collection('chats')
+          .doc(chatId1)
+          .collection('messages')
+          .doc(uuid.v4().toString()),
+        myMsg,
+      );
+
+      batch.set(
+        firestore()
+          .collection('chats')
+          .doc(chatId2)
+          .collection('messages')
+          .doc(uuid.v4().toString()),
+        myMsg,
+      );
+
+      await batch.commit();
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  }, []);
 
   const renderBubble = props => {
-    const {currentMessage} = props;
-    const bubbleStyles = {
-      right: {
-        backgroundColor: '#3897f0',
-        borderRadius: 15,
-        maxWidth: '80%',
-      },
-      left: {
-        backgroundColor: '#f0f0f0',
-        borderRadius: 15,
-        maxWidth: '80%',
-      },
-    };
-
     return (
       <Bubble
         {...props}
-        textStyle={{
-          right: {color: 'white'},
-          left: {color: 'black'},
+        wrapperStyle={{
+          right: {
+            backgroundColor: '#0084FF',
+          },
+          left: {
+            backgroundColor: isDarkMode ? '#333333' : '#ECECEC',
+          },
         }}
-        wrapperStyle={
-          bubbleStyles[
-            currentMessage.user._id === route.params.id ? 'right' : 'left'
-          ]
-        }>
-        {currentMessage.text}
-
-        <Text
-          style={{
-            alignSelf: 'flex-end',
-            fontSize: 12,
-            color: '#91918e',
-            marginTop: 4,
-          }}>
-          {new Date(currentMessage.createdAt).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
-        </Text>
-      </Bubble>
+        textStyle={{
+          right: {
+            color: isDarkMode ? '#FFFFFF' : '#fff',
+          },
+          left: {
+            color: isDarkMode ? '#FFFFFF' : '#000',
+          },
+        }}
+      />
     );
   };
 
-  const handleSend = () => {
-    if (inputText && inputText.trim() !== '') {
-      const newMessage = {
-        _id: Math.random().toString(36).substring(7),
-        text: inputText.trim(),
-        createdAt: new Date().getTime(),
-        user: {
-          _id: route.params.id,
-        },
-      };
-
-      onSend([newMessage]);
-      setInputText('');
-    }
-  };
-
   return (
-    <SafeAreaView style={styles.container}>
-      <ImageBackground
-        source={ImagePath.BACKGROUNDIMAGE}
-        style={styles.ImageBackground}>
-        <GiftedChat
-          messages={messagesList}
-          onSend={messages => onSend(messages)}
-          user={{
-            _id: route.params.id,
-          }}
-          renderBubble={renderBubble}
-        />
-      </ImageBackground>
+    <SafeAreaView
+      style={[
+        styles.container,
+        {backgroundColor: isDarkMode ? '#000' : '#fff'},
+      ]}>
+      <GiftedChat
+        messages={messageList}
+        onSend={messages => onSend(messages)}
+        user={{
+          _id: route.params.id,
+        }}
+        renderBubble={renderBubble}
+      />
+
+      <View style={styles.bottomSpaceView} />
     </SafeAreaView>
   );
 };

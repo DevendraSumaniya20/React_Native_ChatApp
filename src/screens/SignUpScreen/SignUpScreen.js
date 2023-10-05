@@ -1,22 +1,24 @@
 import React, {useState} from 'react';
 import {
-  View,
   Text,
   SafeAreaView,
   TextInput,
   TouchableOpacity,
   Alert,
-  ImageBackground,
   KeyboardAvoidingView,
   Platform,
+  StatusBar,
+  View,
 } from 'react-native';
 import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import uuid from 'react-native-uuid';
 import NavigationString from '../../constants/NavigationString';
-import ImagePath from '../../constants/ImagePath';
+
 import {heightPercentageToDP} from 'react-native-responsive-screen';
+import {useSelector} from 'react-redux';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const SignUpScreen = () => {
   const [name, setName] = useState('');
@@ -31,6 +33,8 @@ const SignUpScreen = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
   const navigation = useNavigation();
+
+  const isDarkMode = useSelector(state => state.theme.isDarkmode);
 
   const registerUser = async () => {
     const userId = uuid.v4();
@@ -95,102 +99,182 @@ const SignUpScreen = () => {
     return isValid;
   };
 
+  const clearError = () => {
+    setNameError('');
+    setEmailError('');
+    setMobileError('');
+    setPasswordError('');
+    setConfirmPasswordError('');
+  };
+
   const keyboardVerticalOffset =
     Platform.OS === 'ios' || Platform.OS === 'android'
       ? heightPercentageToDP(30)
       : 0;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        {backgroundColor: isDarkMode ? '#000' : '#fff'},
+      ]}>
+      <StatusBar
+        networkActivityIndicatorVisible
+        showHideTransition={'slide'}
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+      />
       <KeyboardAvoidingView
         behavior="padding"
         keyboardVerticalOffset={keyboardVerticalOffset}>
-        <ImageBackground
-          source={ImagePath.BACKGROUNDIMAGE}
-          style={styles.ImageBackground}>
-          <Text style={styles.title}>Sign Up</Text>
-
-          <TextInput
-            autoCapitalize="none"
-            autoComplete="off"
-            autoCorrect={false}
-            style={styles.input}
-            placeholder="Enter Name"
-            value={name}
-            placeholderTextColor={'#fff'}
-            onChangeText={txt => setName(txt)}
-          />
-          <Text style={styles.errorText}>{nameError}</Text>
-
-          <TextInput
-            autoCapitalize="none"
-            autoComplete="off"
-            autoCorrect={false}
-            style={styles.input}
-            placeholder="Enter Email"
-            placeholderTextColor={'#fff'}
-            value={email}
-            onChangeText={txt => setEmail(txt)}
-            keyboardType="email-address"
-          />
-          <Text style={styles.errorText}>{emailError}</Text>
-
-          <TextInput
-            autoCapitalize="none"
-            autoComplete="off"
-            autoCorrect={false}
-            style={styles.input}
-            placeholderTextColor={'#fff'}
-            keyboardType="number-pad"
-            placeholder="Enter Mobile"
-            value={mobile}
-            onChangeText={txt => setMobile(txt)}
-          />
-          <Text style={styles.errorText}>{mobileError}</Text>
-
-          <TextInput
-            autoCapitalize="none"
-            autoComplete="off"
-            autoCorrect={false}
-            style={styles.input}
-            placeholderTextColor={'#fff'}
-            placeholder="Enter Password"
-            value={password}
-            secureTextEntry
-            onChangeText={txt => setPassword(txt)}
-          />
-          <Text style={styles.errorText}>{passwordError}</Text>
-
-          <TextInput
-            autoCapitalize="none"
-            autoComplete="off"
-            autoCorrect={false}
-            style={styles.input}
-            placeholderTextColor={'#fff'}
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            secureTextEntry
-            onChangeText={txt => setConfirmPassword(txt)}
-          />
-          <Text style={styles.errorText}>{confirmPasswordError}</Text>
-
+        <View style={styles.backButton}>
           <TouchableOpacity
-            style={styles.button}
             onPress={() => {
-              if (validate()) {
-                registerUser();
-              } else {
-                Alert.alert('Please Enter your details.');
-              }
+              navigation.navigate(NavigationString.LOGIN);
             }}>
-            <Text style={styles.buttonText}>Sign Up</Text>
+            <MaterialIcons
+              name="keyboard-arrow-left"
+              size={heightPercentageToDP(4)}
+              color={isDarkMode ? '#fff' : '#000'}
+            />
           </TouchableOpacity>
+        </View>
+        <Text style={[styles.title, {color: isDarkMode ? '#fff' : '#000'}]}>
+          Sign Up
+        </Text>
+        <TextInput
+          autoCapitalize="none"
+          autoComplete="off"
+          autoCorrect={false}
+          style={[
+            styles.input,
+            {
+              borderColor: isDarkMode ? '#fff' : '#000',
+              color: isDarkMode ? '#fff' : '#000',
+            },
+          ]}
+          placeholderTextColor={isDarkMode ? '#fff' : '#000'}
+          placeholder="Enter Name"
+          value={name}
+          onChangeText={txt => {
+            clearError();
+            setName(txt);
+          }}
+        />
+        <Text style={styles.errorText}>{nameError}</Text>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate(NavigationString.LOGIN)}>
-            <Text style={styles.orLogin}>Or Login</Text>
-          </TouchableOpacity>
-        </ImageBackground>
+        <TextInput
+          autoCapitalize="none"
+          autoComplete="off"
+          autoCorrect={false}
+          style={[
+            styles.input,
+            {
+              borderColor: isDarkMode ? '#fff' : '#000',
+              color: isDarkMode ? '#fff' : '#000',
+            },
+          ]}
+          placeholderTextColor={isDarkMode ? '#fff' : '#000'}
+          placeholder="Enter Email"
+          value={email}
+          onChangeText={txt => {
+            setEmail(txt);
+            clearError();
+          }}
+          keyboardType="email-address"
+        />
+        <Text style={styles.errorText}>{emailError}</Text>
+
+        <TextInput
+          autoCapitalize="none"
+          autoComplete="off"
+          autoCorrect={false}
+          style={[
+            styles.input,
+            {
+              borderColor: isDarkMode ? '#fff' : '#000',
+              color: isDarkMode ? '#fff' : '#000',
+            },
+          ]}
+          placeholderTextColor={isDarkMode ? '#fff' : '#000'}
+          keyboardType="number-pad"
+          placeholder="Enter Mobile"
+          value={mobile}
+          onChangeText={txt => {
+            setMobile(txt);
+            clearError();
+          }}
+        />
+        <Text style={styles.errorText}>{mobileError}</Text>
+
+        <TextInput
+          autoCapitalize="none"
+          autoComplete="off"
+          autoCorrect={false}
+          style={[
+            styles.input,
+            {
+              borderColor: isDarkMode ? '#fff' : '#000',
+              color: isDarkMode ? '#fff' : '#000',
+            },
+          ]}
+          placeholderTextColor={isDarkMode ? '#fff' : '#000'}
+          placeholder="Enter Password"
+          value={password}
+          secureTextEntry
+          onChangeText={txt => {
+            setPassword(txt);
+            clearError();
+          }}
+        />
+        <Text style={styles.errorText}>{passwordError}</Text>
+
+        <TextInput
+          autoCapitalize="none"
+          autoComplete="off"
+          autoCorrect={false}
+          style={[
+            styles.input,
+            {
+              borderColor: isDarkMode ? '#fff' : '#000',
+              color: isDarkMode ? '#fff' : '#000',
+            },
+          ]}
+          placeholderTextColor={isDarkMode ? '#fff' : '#000'}
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          secureTextEntry
+          onChangeText={txt => {
+            setConfirmPassword(txt), clearError();
+          }}
+        />
+        <Text style={styles.errorText}>{confirmPasswordError}</Text>
+
+        <TouchableOpacity
+          style={[styles.button, {borderColor: isDarkMode ? '#fff' : '#000'}]}
+          onPress={() => {
+            if (validate()) {
+              registerUser();
+            } else {
+              Alert.alert('Please Enter your details.');
+            }
+          }}>
+          <Text
+            style={[
+              styles.buttonText,
+              {
+                color: isDarkMode ? '#fff' : '#000',
+              },
+            ]}>
+            Sign Up
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate(NavigationString.LOGIN)}>
+          <Text style={[styles.orLogin, {color: isDarkMode ? '#fff' : '#000'}]}>
+            Or Login
+          </Text>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

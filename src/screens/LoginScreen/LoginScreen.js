@@ -7,9 +7,9 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  ImageBackground,
   StatusBar,
   KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
@@ -17,14 +17,22 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import NavigationString from '../../constants/NavigationString';
 import Loader from '../../components/Loader';
 import styles from './styles';
-import ImagePath from '../../constants/ImagePath';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
+import {useDispatch, useSelector} from 'react-redux';
+import {toggleTheme} from '../../store/reducerSlice/themeSlice';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [visible, setVisible] = useState(false);
   const navigation = useNavigation();
+
+  const isDarkMode = useSelector(state => state.theme.isDarkmode);
+  const dispatch = useDispatch();
+
+  const handleToggle = () => {
+    dispatch(toggleTheme());
+  };
 
   const loginUser = async () => {
     setVisible(true);
@@ -62,59 +70,85 @@ const LoginScreen = () => {
 
   const keyboardVerticalOffset =
     Platform.OS === 'ios' || Platform.OS === 'android'
-      ? heightPercentageToDP(30)
+      ? heightPercentageToDP(1)
       : 0;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        {backgroundColor: isDarkMode ? '#000' : '#fff'},
+      ]}>
       <StatusBar
-        backgroundColor={'transparent'}
         networkActivityIndicatorVisible
         showHideTransition={'slide'}
-        barStyle={'dark-content'}
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
       />
+
       <KeyboardAvoidingView
         behavior="padding"
         keyboardVerticalOffset={keyboardVerticalOffset}>
-        <ImageBackground
-          source={ImagePath.BACKGROUNDIMAGE}
-          style={styles.ImageBackground}>
-          <Text style={styles.title}>Login</Text>
+        <Text style={[styles.title, {color: isDarkMode ? '#fff' : '#000'}]}>
+          Login
+        </Text>
 
-          <TextInput
-            autoCapitalize="none"
-            autoCompleteType="off"
-            autoCorrect={false}
-            style={styles.input}
-            placeholder="Enter Email"
-            value={email}
-            placeholderTextColor="#fff"
-            onChangeText={txt => setEmail(txt)}
-          />
+        <TextInput
+          autoCapitalize="none"
+          autoCompleteType="off"
+          autoCorrect={false}
+          style={[
+            styles.input,
+            {
+              borderColor: isDarkMode ? '#fff' : '#000',
+              color: isDarkMode ? '#fff' : '#000',
+            },
+          ]}
+          placeholderTextColor={isDarkMode ? '#fff' : '#000'}
+          placeholder="Enter Email"
+          value={email}
+          onChangeText={txt => setEmail(txt)}
+        />
 
-          <TextInput
-            autoCapitalize="none"
-            autoCompleteType="off"
-            autoCorrect={false}
-            style={styles.input}
-            placeholder="Enter Password"
-            value={password}
-            placeholderTextColor="#fff"
-            secureTextEntry
-            onChangeText={txt => setPassword(txt)}
-          />
+        <TextInput
+          autoCapitalize="none"
+          autoCompleteType="off"
+          autoCorrect={false}
+          style={[
+            styles.input,
+            {
+              borderColor: isDarkMode ? '#fff' : '#000',
+              color: isDarkMode ? '#fff' : '#000',
+            },
+          ]}
+          placeholderTextColor={isDarkMode ? '#fff' : '#000'}
+          placeholder="Enter Password"
+          value={password}
+          secureTextEntry
+          onChangeText={txt => setPassword(txt)}
+        />
 
-          <TouchableOpacity style={styles.button} onPress={() => loginUser()}>
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, {borderColor: isDarkMode ? '#fff' : '#000'}]}
+          onPress={() => loginUser()}>
+          <Text
+            style={[
+              styles.buttonText,
+              {
+                color: isDarkMode ? '#fff' : '#000',
+              },
+            ]}>
+            Login
+          </Text>
+        </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate(NavigationString.SIGNUP)}>
-            <Text style={styles.orLogin}>Or SignUp</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate(NavigationString.SIGNUP)}>
+          <Text style={[styles.orLogin, {color: isDarkMode ? '#fff' : '#000'}]}>
+            Or SignUp
+          </Text>
+        </TouchableOpacity>
 
-          <Loader visible={visible} />
-        </ImageBackground>
+        <Loader visible={visible} />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
