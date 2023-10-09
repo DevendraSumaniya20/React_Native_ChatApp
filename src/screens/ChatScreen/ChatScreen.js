@@ -79,25 +79,29 @@ const ChatScreen = () => {
   }, []);
 
   const renderBubble = props => {
+    const bubbleStyles = {
+      right: {
+        backgroundColor: '#0084FF',
+      },
+      left: {
+        backgroundColor: isDarkMode ? '#333333' : '#ECECEC',
+      },
+    };
+
+    const textStyles = {
+      right: {
+        color: isDarkMode ? '#FFFFFF' : '#fff',
+      },
+      left: {
+        color: isDarkMode ? '#FFFFFF' : '#000',
+      },
+    };
+
     return (
       <Bubble
         {...props}
-        wrapperStyle={{
-          right: {
-            backgroundColor: '#0084FF',
-          },
-          left: {
-            backgroundColor: isDarkMode ? '#333333' : '#ECECEC',
-          },
-        }}
-        textStyle={{
-          right: {
-            color: isDarkMode ? '#FFFFFF' : '#fff',
-          },
-          left: {
-            color: isDarkMode ? '#FFFFFF' : '#000',
-          },
-        }}
+        wrapperStyle={bubbleStyles[props.position]}
+        textStyle={textStyles[props.position]}
       />
     );
   };
