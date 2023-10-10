@@ -1,4 +1,3 @@
-// LoginScreen.js
 import React, {useState} from 'react';
 import {
   View,
@@ -6,7 +5,6 @@ import {
   SafeAreaView,
   TextInput,
   TouchableOpacity,
-  Alert,
   StatusBar,
   KeyboardAvoidingView,
   Platform,
@@ -19,22 +17,51 @@ import Loader from '../../components/Loader';
 import styles from './styles';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
-import {toggleTheme} from '../../store/reducerSlice/themeSlice';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [visible, setVisible] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const navigation = useNavigation();
+  const isDarkMode = useSelector(state => state.theme.isDarkmode); // Check if this is the correct state key
 
-  const isDarkMode = useSelector(state => state.theme.isDarkmode);
-  const dispatch = useDispatch();
+  const validateForm = () => {
+    let isValid = true;
+    setEmailError('');
+    setPasswordError('');
 
-  const handleToggle = () => {
-    dispatch(toggleTheme());
+    if (!email.trim() || !password.trim()) {
+      setEmailError('Please enter both email and password.');
+      isValid = false;
+    }
+
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+    if (!emailPattern.test(email)) {
+      setEmailError('Please enter a valid email address');
+      isValid = false;
+    }
+
+    if (password === '') {
+      setPasswordError('Please enter a password');
+      isValid = false;
+    }
+
+    if (password.length < 4) {
+      setPasswordError('Password must be at least 4 characters long');
+      isValid = false;
+    }
+
+    return isValid;
   };
 
   const loginUser = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     setVisible(true);
     try {
       const querySnapshot = await firestore()
@@ -44,13 +71,13 @@ const LoginScreen = () => {
 
       if (!querySnapshot.empty) {
         const userData = querySnapshot.docs[0].data();
-        goToNext(userData);
+        await goToNext(userData);
       } else {
-        Alert.alert('User not found');
+        setError('User not found'); // You need to define the setError function
       }
     } catch (error) {
       console.error(error);
-      Alert.alert('An error occurred');
+      setError('An error occurred'); // You need to define the setError function
     } finally {
       setVisible(false);
     }
@@ -64,7 +91,7 @@ const LoginScreen = () => {
       navigation.navigate(NavigationString.MAIN);
     } catch (error) {
       console.error(error);
-      Alert.alert('An error occurred');
+      setError('An error occurred while storing data'); // You need to define the setError function
     }
   };
 
@@ -108,6 +135,7 @@ const LoginScreen = () => {
           value={email}
           onChangeText={txt => setEmail(txt)}
         />
+        {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
         <TextInput
           autoCapitalize="none"
@@ -126,6 +154,9 @@ const LoginScreen = () => {
           secureTextEntry
           onChangeText={txt => setPassword(txt)}
         />
+        {passwordError ? (
+          <Text style={styles.errorText}>{passwordError}</Text>
+        ) : null}
 
         <TouchableOpacity
           style={[styles.button, {borderColor: isDarkMode ? '#fff' : '#000'}]}

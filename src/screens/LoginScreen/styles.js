@@ -35,6 +35,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: hp('5'),
   },
+  errorText: {
+    color: 'red',
+    fontSize: hp('1.5'),
+    marginTop: hp('0.3'),
+    marginLeft: wp('6'),
+  },
   buttonText: {
     textAlign: 'center',
     fontSize: hp('2.6'),
