@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
@@ -47,6 +48,29 @@ const UserScreen = () => {
       });
   };
 
+  const gotoLogin = () => {
+    Alert.alert(
+      'Are you sure you want to go to the login screen?',
+      'Press OK to proceed or Cancel to stay on this screen.',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => {
+            // User chose to cancel, do nothing
+          },
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => {
+            // User chose to proceed to the login screen
+            navigation.navigate(NavigationString.LOGIN);
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
   return (
     <SafeAreaView
       style={[
@@ -59,10 +83,7 @@ const UserScreen = () => {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
       />
       <View style={styles.backButton}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate(NavigationString.LOGIN);
-          }}>
+        <TouchableOpacity onPress={gotoLogin}>
           <MaterialIcons
             name="keyboard-arrow-left"
             size={heightPercentageToDP(4)}

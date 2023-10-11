@@ -25,11 +25,9 @@ const SplashScreen = () => {
     }
   };
   return (
-    <LinearGradient
-      colors={['#4c669f', '#3b5998', '#192f6a']}
-      style={styles.container}>
+    <LinearGradient colors={['#C33764', '#1D2671']} style={styles.container}>
       <SafeAreaView style={styles.container}>
-        <Text style={styles.Text}>Chat App</Text>
+        <Text style={[styles.Text]}>Chat App</Text>
       </SafeAreaView>
     </LinearGradient>
   );

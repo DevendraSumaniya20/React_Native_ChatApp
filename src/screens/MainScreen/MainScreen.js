@@ -24,6 +24,7 @@ const MainScreen = () => {
         alignItems: 'center',
         justifyContent: 'space-between',
         backgroundColor: isDarkMode ? '#000' : '#fff',
+        marginBottom: hp(1.2),
       }}
       initialRouteName={NavigationString.USER}
       labeled={false}>

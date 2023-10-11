@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
   },
   Text: {
     fontSize: hp('5%'),
+    color: '#FFFFFF',
   },
 });
 
