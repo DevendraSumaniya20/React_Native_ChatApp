@@ -11,8 +11,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   lottieanimation: {
-    height: hp(30),
-    width: wp(30),
+    height: hp(50),
+    width: wp(50),
   },
   Text: {
     fontSize: hp('5%'),

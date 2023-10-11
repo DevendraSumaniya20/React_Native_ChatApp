@@ -9,18 +9,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  ImageView: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 30,
-    backgroundColor: 'red',
-  },
-
-  LoginGif: {
-    width: wp(50),
-    height: hp(20),
+  lottieanimation: {
+    height: hp(35),
+    width: wp(100),
     alignSelf: 'center',
   },
+
   title: {
     fontSize: hp('3'),
     alignSelf: 'center',

@@ -27,11 +27,12 @@ const SplashScreen = () => {
     }
   };
   return (
-    <LinearGradient colors={['#C33764', '#1D2671']} style={styles.container}>
+    <LinearGradient colors={['#06BEB6', '#48B1BF']} style={styles.container}>
       <SafeAreaView style={styles.container}>
         <LottieView
           style={styles.lottieanimation}
-          source={LottieAnimationPath.ANIMATION2}
+          source={LottieAnimationPath.SPLASH_ANIMATION}
+          resizeMode="contain"
           autoPlay
           loop
         />

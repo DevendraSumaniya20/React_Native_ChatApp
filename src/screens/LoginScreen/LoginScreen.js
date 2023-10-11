@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  ScrollView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
@@ -17,8 +18,9 @@ import NavigationString from '../../constants/NavigationString';
 import Loader from '../../components/Loader';
 import styles from './styles';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
-import {useDispatch, useSelector} from 'react-redux';
-import ImagePath from '../../constants/ImagePath';
+import {useSelector} from 'react-redux';
+import LottieView from 'lottie-react-native';
+import LottieAnimationPath from '../../constants/LottieAnimationPath';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -94,9 +96,7 @@ const LoginScreen = () => {
   };
 
   const keyboardVerticalOffset =
-    Platform.OS === 'ios' || Platform.OS === 'android'
-      ? heightPercentageToDP(1)
-      : 0;
+    Platform.OS === 'ios' || Platform.OS === 'android' ? 50 : 0;
 
   return (
     <SafeAreaView
@@ -104,87 +104,94 @@ const LoginScreen = () => {
         styles.container,
         {backgroundColor: isDarkMode ? '#000' : '#fff'},
       ]}>
-      <StatusBar
-        networkActivityIndicatorVisible
-        showHideTransition={'slide'}
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-      />
-
-      <KeyboardAvoidingView
-        behavior="padding"
-        keyboardVerticalOffset={keyboardVerticalOffset}>
-        <View style={styles.ImageView}>
-          <Image source={ImagePath.LOGINGIF} style={styles.LoginGif} />
-        </View>
-
-        <TextInput
-          autoCapitalize="none"
-          autoCompleteType="off"
-          autoCorrect={false}
-          style={[
-            styles.input,
-            {
-              borderColor: isDarkMode ? '#fff' : '#000',
-              color: isDarkMode ? '#fff' : '#000',
-            },
-          ]}
-          placeholderTextColor={isDarkMode ? '#fff' : '#000'}
-          placeholder="Enter Email"
-          value={email}
-          onChangeText={txt => setEmail(txt)}
+      <ScrollView>
+        <StatusBar
+          networkActivityIndicatorVisible
+          showHideTransition={'slide'}
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         />
-        {errors.email ? (
-          <Text style={styles.errorText}>{errors.email}</Text>
-        ) : null}
 
-        <TextInput
-          autoCapitalize="none"
-          autoCompleteType="off"
-          autoCorrect={false}
-          style={[
-            styles.input,
-            {
-              borderColor: isDarkMode ? '#fff' : '#000',
-              color: isDarkMode ? '#fff' : '#000',
-            },
-          ]}
-          placeholderTextColor={isDarkMode ? '#fff' : '#000'}
-          placeholder="Enter Password"
-          value={password}
-          secureTextEntry
-          onChangeText={txt => setPassword(txt)}
-        />
-        {errors.password ? (
-          <Text style={styles.errorText}>{errors.password}</Text>
-        ) : null}
+        <KeyboardAvoidingView
+          behavior="padding"
+          keyboardVerticalOffset={keyboardVerticalOffset}>
+          <LottieView
+            style={styles.lottieanimation}
+            source={LottieAnimationPath.LOGIN_ANIMATION}
+            resizeMode="contain"
+            autoPlay
+            loop
+          />
 
-        {errors.general ? (
-          <Text style={styles.errorText}>{errors.general}</Text>
-        ) : null}
-
-        <TouchableOpacity
-          style={[styles.button, {borderColor: isDarkMode ? '#fff' : '#000'}]}
-          onPress={() => loginUser()}>
-          <Text
+          <TextInput
+            autoCapitalize="none"
+            autoCompleteType="off"
+            autoCorrect={false}
             style={[
-              styles.buttonText,
+              styles.input,
               {
+                borderColor: isDarkMode ? '#fff' : '#000',
                 color: isDarkMode ? '#fff' : '#000',
               },
-            ]}>
-            Login
-          </Text>
-        </TouchableOpacity>
+            ]}
+            placeholderTextColor={isDarkMode ? '#fff' : '#000'}
+            placeholder="Enter Email"
+            value={email}
+            onChangeText={txt => setEmail(txt)}
+          />
+          {errors.email ? (
+            <Text style={styles.errorText}>{errors.email}</Text>
+          ) : null}
 
-        <TouchableOpacity
-          onPress={() => navigation.navigate(NavigationString.SIGNUP)}>
-          <Text style={[styles.orLogin, {color: isDarkMode ? '#fff' : '#000'}]}>
-            Or SignUp
-          </Text>
-        </TouchableOpacity>
+          <TextInput
+            autoCapitalize="none"
+            autoCompleteType="off"
+            autoCorrect={false}
+            style={[
+              styles.input,
+              {
+                borderColor: isDarkMode ? '#fff' : '#000',
+                color: isDarkMode ? '#fff' : '#000',
+              },
+            ]}
+            placeholderTextColor={isDarkMode ? '#fff' : '#000'}
+            placeholder="Enter Password"
+            value={password}
+            secureTextEntry
+            onChangeText={txt => setPassword(txt)}
+          />
+          {errors.password ? (
+            <Text style={styles.errorText}>{errors.password}</Text>
+          ) : null}
 
-        <Loader visible={visible} />
-      </KeyboardAvoidingView>
+          {errors.general ? (
+            <Text style={styles.errorText}>{errors.general}</Text>
+          ) : null}
+
+          <TouchableOpacity
+            style={[styles.button, {borderColor: isDarkMode ? '#fff' : '#000'}]}
+            onPress={() => loginUser()}>
+            <Text
+              style={[
+                styles.buttonText,
+                {
+                  color: isDarkMode ? '#fff' : '#000',
+                },
+              ]}>
+              Login
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate(NavigationString.SIGNUP)}>
+            <Text
+              style={[styles.orLogin, {color: isDarkMode ? '#fff' : '#000'}]}>
+              Or SignUp
+            </Text>
+          </TouchableOpacity>
+
+          <Loader visible={visible} />
+        </KeyboardAvoidingView>
+      </ScrollView>
     </SafeAreaView>
   );
 };

@@ -1,5 +1,13 @@
-import React from 'react';
-import {View, Text, TouchableOpacity, SafeAreaView} from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  TouchableWithoutFeedback,
+  Animated,
+  Alert,
+} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {toggleTheme} from '../../store/reducerSlice/themeSlice';
@@ -12,6 +20,8 @@ const SettingScreen = ({onLogOut}) => {
   const isDarkMode = useSelector(state => state.theme.isDarkmode);
   const navigation = useNavigation();
 
+  const [scaleValue] = useState(new Animated.Value(1));
+
   const handleToggle = () => {
     dispatch(toggleTheme());
   };
@@ -22,6 +32,51 @@ const SettingScreen = ({onLogOut}) => {
     } catch (error) {
       console.error('Error while logging out:', error);
     }
+  };
+
+  const pressIn = () => {
+    Animated.spring(scaleValue, {
+      toValue: 1.2, // Increase the size to 1.2 times
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const pressOut = () => {
+    Animated.spring(scaleValue, {
+      toValue: 1.2,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const handlePress = () => {
+    Animated.timing(scaleValue, {
+      toValue: 1,
+      duration: 1500,
+      useNativeDriver: false,
+    }).start(() => {
+      pressOut();
+    });
+  };
+
+  const gotoLogin = () => {
+    Alert.alert(
+      'Are you sure you want to go to the login screen?',
+      'Press OK to proceed or Cancel to stay on this screen.',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => {},
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => {
+            navigation.navigate(NavigationString.LOGIN);
+          },
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
   return (
@@ -42,10 +97,23 @@ const SettingScreen = ({onLogOut}) => {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <MaterialIcons name="logout" size={24} color="white" />
-        <Text style={styles.buttonText}>Logout</Text>
-      </TouchableOpacity>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          gotoLogin();
+          handlePress();
+        }}
+        onPressIn={pressIn}>
+        <Animated.View
+          style={[
+            styles.logoutButton,
+            {
+              transform: [{scale: scaleValue}],
+            },
+          ]}>
+          <MaterialIcons name="logout" size={24} color="white" />
+          <Text style={styles.buttonText}>Logout</Text>
+        </Animated.View>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 };
