@@ -26,6 +26,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
   },
+  noFriendsMessageView: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  noFriendsMessage: {
+    textAlign: 'center',
+  },
   userItem: {
     width: Dimensions.get('window').width - 35,
     alignSelf: 'center',

@@ -8,6 +8,7 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
@@ -17,44 +18,40 @@ import Loader from '../../components/Loader';
 import styles from './styles';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
+import ImagePath from '../../constants/ImagePath';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [visible, setVisible] = useState(false);
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+    general: '',
+  });
   const navigation = useNavigation();
-  const isDarkMode = useSelector(state => state.theme.isDarkmode); // Check if this is the correct state key
+  const isDarkMode = useSelector(state => state.theme.isDarkmode);
 
   const validateForm = () => {
-    let isValid = true;
-    setEmailError('');
-    setPasswordError('');
-
-    if (!email.trim() || !password.trim()) {
-      setEmailError('Please enter both email and password.');
-      isValid = false;
-    }
-
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
-    if (!emailPattern.test(email)) {
-      setEmailError('Please enter a valid email address');
-      isValid = false;
+    const newErrors = {
+      email: !email.trim() ? 'Please enter your email' : '',
+      password: !password.trim() ? 'Please enter your password' : '',
+      general: '',
+    };
+
+    if (!newErrors.email && !emailPattern.test(email)) {
+      newErrors.email = 'Please enter a valid email address';
     }
 
-    if (password === '') {
-      setPasswordError('Please enter a password');
-      isValid = false;
+    if (!newErrors.password && password.length < 4) {
+      newErrors.password = 'Password must be at least 4 characters long';
     }
 
-    if (password.length < 4) {
-      setPasswordError('Password must be at least 4 characters long');
-      isValid = false;
-    }
+    setErrors(newErrors);
 
-    return isValid;
+    return !newErrors.email && !newErrors.password;
   };
 
   const loginUser = async () => {
@@ -63,6 +60,7 @@ const LoginScreen = () => {
     }
 
     setVisible(true);
+
     try {
       const querySnapshot = await firestore()
         .collection('users')
@@ -73,11 +71,11 @@ const LoginScreen = () => {
         const userData = querySnapshot.docs[0].data();
         await goToNext(userData);
       } else {
-        setError('User not found'); // You need to define the setError function
+        setErrors({...errors, general: 'User not found'});
       }
     } catch (error) {
       console.error(error);
-      setError('An error occurred'); // You need to define the setError function
+      setErrors({...errors, general: 'An error occurred'});
     } finally {
       setVisible(false);
     }
@@ -91,7 +89,7 @@ const LoginScreen = () => {
       navigation.navigate(NavigationString.MAIN);
     } catch (error) {
       console.error(error);
-      setError('An error occurred while storing data'); // You need to define the setError function
+      setErrors({...errors, general: 'An error occurred while storing data'});
     }
   };
 
@@ -115,9 +113,9 @@ const LoginScreen = () => {
       <KeyboardAvoidingView
         behavior="padding"
         keyboardVerticalOffset={keyboardVerticalOffset}>
-        <Text style={[styles.title, {color: isDarkMode ? '#fff' : '#000'}]}>
-          Login
-        </Text>
+        <View style={styles.ImageView}>
+          <Image source={ImagePath.LOGINGIF} style={styles.LoginGif} />
+        </View>
 
         <TextInput
           autoCapitalize="none"
@@ -135,7 +133,9 @@ const LoginScreen = () => {
           value={email}
           onChangeText={txt => setEmail(txt)}
         />
-        {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+        {errors.email ? (
+          <Text style={styles.errorText}>{errors.email}</Text>
+        ) : null}
 
         <TextInput
           autoCapitalize="none"
@@ -154,8 +154,12 @@ const LoginScreen = () => {
           secureTextEntry
           onChangeText={txt => setPassword(txt)}
         />
-        {passwordError ? (
-          <Text style={styles.errorText}>{passwordError}</Text>
+        {errors.password ? (
+          <Text style={styles.errorText}>{errors.password}</Text>
+        ) : null}
+
+        {errors.general ? (
+          <Text style={styles.errorText}>{errors.general}</Text>
         ) : null}
 
         <TouchableOpacity

@@ -9,9 +9,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  ImageBackground: {
-    width: wp(100),
-    height: hp(100),
+  ImageView: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 30,
+    backgroundColor: 'red',
+  },
+
+  LoginGif: {
+    width: wp(50),
+    height: hp(20),
+    alignSelf: 'center',
   },
   title: {
     fontSize: hp('3'),

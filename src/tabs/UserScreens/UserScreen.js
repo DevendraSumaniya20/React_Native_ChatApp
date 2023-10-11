@@ -55,15 +55,12 @@ const UserScreen = () => {
       [
         {
           text: 'Cancel',
-          onPress: () => {
-            // User chose to cancel, do nothing
-          },
+          onPress: () => {},
           style: 'cancel',
         },
         {
           text: 'OK',
           onPress: () => {
-            // User chose to proceed to the login screen
             navigation.navigate(NavigationString.LOGIN);
           },
         },
@@ -96,39 +93,52 @@ const UserScreen = () => {
           Friends
         </Text>
       </View>
-      <FlatList
-        data={users}
-        renderItem={({item, index}) => {
-          return (
-            <TouchableOpacity
-              style={[
-                styles.userItem,
-                {
-                  backgroundColor: isDarkMode ? '#333' : '#fff',
-                  borderBottomColor: isDarkMode ? '#444' : '#ccc',
-                },
-              ]}
-              onPress={() => {
-                navigation.navigate(NavigationString.CHAT, {
-                  data: item,
-                  id: id,
-                });
-              }}>
-              <Image
-                source={ImagePath.PROFILE}
+
+      {users.length === 0 ? (
+        <View style={styles.noFriendsMessageView}>
+          <Text
+            style={[
+              styles.noFriendsMessage,
+              {color: isDarkMode ? '#fff' : '#000'},
+            ]}>
+            You haven't added any friends yet.
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={users}
+          renderItem={({item, index}) => {
+            return (
+              <TouchableOpacity
                 style={[
-                  styles.userIcon,
-                  {tintColor: isDarkMode ? '#eee' : '#AAA'},
+                  styles.userItem,
+                  {
+                    backgroundColor: isDarkMode ? '#333' : '#fff',
+                    borderBottomColor: isDarkMode ? '#444' : '#ccc',
+                  },
                 ]}
-              />
-              <Text
-                style={[styles.name, {color: isDarkMode ? '#fff' : '#000'}]}>
-                {item.name}
-              </Text>
-            </TouchableOpacity>
-          );
-        }}
-      />
+                onPress={() => {
+                  navigation.navigate(NavigationString.CHAT, {
+                    data: item,
+                    id: id,
+                  });
+                }}>
+                <Image
+                  source={ImagePath.PROFILE}
+                  style={[
+                    styles.userIcon,
+                    {tintColor: isDarkMode ? '#eee' : '#AAA'},
+                  ]}
+                />
+                <Text
+                  style={[styles.name, {color: isDarkMode ? '#fff' : '#000'}]}>
+                  {item.name}
+                </Text>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      )}
     </SafeAreaView>
   );
 };

@@ -6,6 +6,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import NavigationString from '../../constants/NavigationString';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LottieView from 'lottie-react-native';
+import LottieAnimationPath from '../../constants/LottieAnimationPath';
 
 const SplashScreen = () => {
   const navigation = useNavigation();
@@ -27,6 +29,13 @@ const SplashScreen = () => {
   return (
     <LinearGradient colors={['#C33764', '#1D2671']} style={styles.container}>
       <SafeAreaView style={styles.container}>
+        <LottieView
+          style={styles.lottieanimation}
+          source={LottieAnimationPath.ANIMATION2}
+          autoPlay
+          loop
+        />
+
         <Text style={[styles.Text]}>Chat App</Text>
       </SafeAreaView>
     </LinearGradient>
